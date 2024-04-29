@@ -38,7 +38,7 @@ func lecture(game *utils.Game) {
 		fmt.Scanln(&rcvmsg)
 
 		if rcvmsg[0] == uint8('A') { // On traite le message s'il commence par un 'A'
-			utils.DisplayError("app-de-base", "lecture", "Réception de : "+rcvmsg[1:])
+			utils.DisplayError(monNom, "lecture", "Réception de : "+rcvmsg[1:])
 			mutex.Lock()
 			messagePixel := utils.StringToMessagePixel(rcvmsg[1:])
 			utils.DisplayError(monNom, "changerPixel", "Et là bim on change le pixel")
