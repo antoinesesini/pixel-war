@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"image/color"
 	"os"
@@ -31,7 +30,7 @@ func envoyerPixel(positionX int, positionY int, rouge int, vert int, bleu int) {
 }
 
 // Quand le programme n'est pas en train d'écrire, il lit
-func lecture(game *utils.Game) {
+func lecture() {
 	var rcvmsg string
 
 	for {
@@ -40,17 +39,17 @@ func lecture(game *utils.Game) {
 		if rcvmsg[0] == uint8('A') { // On traite le message s'il commence par un 'A'
 			utils.DisplayError(monNom, "lecture", "Réception de : "+rcvmsg[1:])
 			mutex.Lock()
-			messagePixel := utils.StringToMessagePixel(rcvmsg[1:])
+			//messagePixel := utils.StringToMessagePixel(rcvmsg[1:])
 			utils.DisplayError(monNom, "changerPixel", "Et là bim on change le pixel")
-			messageString := utils.MessagePixelToString(messagePixel)
-			cr, _ := strconv.Atoi(utils.TrouverValeur(messageString, "R"))
-			cb, _ := strconv.Atoi(utils.TrouverValeur(messageString, "B"))
-			cg, _ := strconv.Atoi(utils.TrouverValeur(messageString, "G"))
-			x, _ := strconv.Atoi(utils.TrouverValeur(messageString, "positionX"))
-			y, _ := strconv.Atoi(utils.TrouverValeur(messageString, "positionY"))
-			game.UpdateMatrix(x, y, uint8(cr), uint8(cg), uint8(cb))
-			mutex.Unlock()
-			envoyerPixel(x, y, cr, cg, cb)
+			//messageString := utils.MessagePixelToString(messagePixel)
+			//cr, _ := strconv.Atoi(utils.TrouverValeur(messageString, "R"))
+			//cb, _ := strconv.Atoi(utils.TrouverValeur(messageString, "B"))
+			//cg, _ := strconv.Atoi(utils.TrouverValeur(messageString, "G"))
+			//x, _ := strconv.Atoi(utils.TrouverValeur(messageString, "positionX"))
+			//y, _ := strconv.Atoi(utils.TrouverValeur(messageString, "positionY"))
+			//game.UpdateMatrix(x, y, uint8(cr), uint8(cg), uint8(cb))
+			//mutex.Unlock()
+			//envoyerPixel(x, y, cr, cg, cb)
 		}
 		rcvmsg = ""
 	}
@@ -81,7 +80,7 @@ func main() {
 		}
 	}
 
-	colorWheel, _, err := ebitenutil.NewImageFromFile("color_wheel.png")
+	colorWheel, _, err := ebitenutil.NewImageFromFile("app-base/color_wheel.png")
 	if err != nil {
 		panic(err)
 	}
@@ -123,15 +122,16 @@ func main() {
 			}
 		}
 	}()
+	go sendperiodic()
+	go lecture()
 
-	ebiten.RunGame(game)
+	//ebiten.RunGame(game)
 
-	ebiten.SetWindowSize(800, 600)
-	ebiten.SetWindowTitle("Pixel-War")
+	//ebiten.SetWindowSize(800, 600)
+	//ebiten.SetWindowTitle("Pixel-War")
 
 	//Création de 2 go routines qui s'exécutent en parallèle
-	go sendperiodic()
-	go lecture(game)
+
 	//On décide de bloquer le programme principal
 	for {
 		time.Sleep(time.Duration(60) * time.Second)
