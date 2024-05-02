@@ -45,6 +45,11 @@ func MessageEtatToString(etat MessageEtat) string {
 	return sep1 + sep2 + "etat" + sep2 + l + sep1 + sep2 + "bilan" + sep2 + strconv.Itoa(etat.Bilan)
 }
 
+func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
+	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle.Type)) + sepM + sepP + "estampilleSite" + sepP +
+		strconv.Itoa(exclumutuelle.Estampille.Site) + sepM + sepP + "estampilleHorloge" + sepP + strconv.Itoa(exclumutuelle.Estampille.Horloge)
+}
+
 func TrouverValeur(message string, cle string) string {
 	if len(message) < 4 {
 		return ""
@@ -102,6 +107,15 @@ func StringToMessageEtat(str string) MessageEtat {
 	b, _ := strconv.Atoi(TrouverValeur(str, "bilan"))
 	messageetat := MessageEtat{l, b}
 	return messageetat
+}
+
+func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
+	t, _ := strconv.Atoi(TrouverValeur(str, "typeSC"))
+	s, _ := strconv.Atoi(TrouverValeur(str, "estampilleSite"))
+	h, _ := strconv.Atoi(TrouverValeur(str, "estampilleHorloge"))
+	e := Estampille{s, h}
+	messageecxlumutuelle := MessageExclusionMutuelle{TypeSC(t), e}
+	return messageecxlumutuelle
 }
 
 func Recaler(x, y int) int {
