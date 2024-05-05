@@ -63,3 +63,5 @@ type ElementExclusionMutuelle struct {
 	Type    TypeSC
 	Horloge int
 }
+
+type MessageExclusionMutuelleSlice []MessageExclusionMutuelle

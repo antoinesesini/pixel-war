@@ -17,7 +17,7 @@ var jeSuisInitiateur = false
 var monEtatLocal utils.EtatGlobal
 var monBilan int
 var N = 3
-var tabSC = make([]utils.ElementExclusionMutuelle, N)
+var tabSC = []utils.MessageExclusionMutuelle{}
 
 var pNom = flag.String("n", "controle", "nom")
 var monNom string
@@ -26,10 +26,11 @@ func main() {
 	flag.Parse()
 	monNom = *pNom + "-" + strconv.Itoa(os.Getpid())
 
-	for _, e := range tabSC {
+	/*for _, e := range tabSC {
 		e.Type = utils.Liberation
 		e.Horloge = 0
 	}
+	*/
 
 	go lecture()
 	for {

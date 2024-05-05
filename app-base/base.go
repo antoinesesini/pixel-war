@@ -18,15 +18,25 @@ import (
 func frontend(msg utils.MessagePixel) {
 	SectionCritique := true
 	//recupPixelAChangerSansLeChangerNiEnLocalNiEnPrevenantLesAutres
-	MsgPixelTmp := utils.MessagePixelToString(msg)
+	// ------> paramètre msg
 
 	//Keep the pixel
-	PixelTmp := utils.MessagePixel{x, y, r, g, b}
+	PixelTmp := utils.MessagePixel{msg.PositionX, msg.PositionY, msg.Rouge, msg.Vert, msg.Bleu}
+
 	//demandeSC = envoi d'un message demandeSC à l'app de control$
-	utils.MessageExclusionMutuelle {Type: 0,Estampille: (numSite, Horloge) } SecCrit
-	MessageSC( SecCrit )
+	SecCrit := utils.Requete
+	envoyerMessageSC(SecCrit)
+	for SectionCritique == true {
+		si je recois un message comme quoi la SectionCritique est disponible
+			uPDATE PixelTmp Dans la matrice actuelle
+			SecCrit == false
+	}
+	envoyer un message de liberation de la section critique
+	envoyer le message de la modification
+
 
 	//Wait few minutes
+
 }
 
 // Le programme envoie périodiquement des messages sur stdout
@@ -42,6 +52,10 @@ func sendperiodic() {
 func envoyerPixel(positionX int, positionY int, rouge int, vert int, bleu int) {
 	messagePixel := utils.MessagePixel{positionX, positionY, rouge, vert, bleu}
 	fmt.Println(utils.MessagePixelToString(messagePixel))
+}
+// Fonction qui permet d'envoyer un message concernant l'accès / libération de la section critique
+func envoyerMessageSC(Type utils.TypeSC) {
+	fmt.Println("B",Type)
 }
 
 // Quand le programme n'est pas en train d'écrire, il lit

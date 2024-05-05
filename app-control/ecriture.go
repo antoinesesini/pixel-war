@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"utils"
 )
 
@@ -20,4 +21,20 @@ func envoyerMessageControle(message utils.Message) {
 // Envoi un type MessagePixel pour l'appli de base
 func envoyerMessageBase(messagePixel utils.MessagePixel) {
 	envoyerMessage("A" + utils.MessagePixelToString(messagePixel))
+}
+
+func envoyerMessageDemandeSC(SC utils.TypeSC, estampille utils.Estampille) {
+	msg := "C"
+	msg = strconv.Itoa(int(SC))
+	msg += strconv.Itoa(estampille.Site)
+	msg += strconv.Itoa(estampille.Horloge)
+	envoyerMessage(msg)
+}
+
+func envoyerMessageFinSC(SC utils.TypeSC, estampille utils.Estampille) {
+	msg := "C"
+	msg = strconv.Itoa(int(SC))
+	msg += strconv.Itoa(estampille.Site)
+	msg += strconv.Itoa(estampille.Horloge)
+	envoyerMessage(msg)
 }

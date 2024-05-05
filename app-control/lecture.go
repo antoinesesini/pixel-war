@@ -3,6 +3,8 @@ package main
 import (
 	"container/list"
 	"fmt"
+	"sort"
+	"strconv"
 	"utils"
 )
 
@@ -32,6 +34,8 @@ func lecture() {
 		mutex.Unlock()
 	}
 }
+
+// TO DO implémenter le traitement B
 
 // TRAITEMENT DES CONTRÔLES NORMAUX : on extrait le pixel que l'on exploite dans l'app-base et on fait suivre l'information
 // et tout cela avec les bonnes informations mises à jour dans le message : horloge, couleur
@@ -96,15 +100,38 @@ func traiterMessagePixel(rcvmsg string) {
 }
 
 func traiterMessageDemandeSC(rcvmsg string) {
-
+	dem_str := string(rcvmsg[1])
+	dem, _ := strconv.Atoi(dem_str)
+	site := 1
+	demande := utils.MessageExclusionMutuelle{Type: utils.TypeSC(dem), Estampille: utils.Estampille{site, H}}
+	tabSC = append(tabSC, demande)
+	sort.Sort(utils.MessageExclusionMutuelleSlice(tabSC))
+	estampille := utils.Estampille{Site: 1, Horloge: H}
+	envoyerMessageDemandeSC(utils.TypeSC(dem), estampille)
 }
 
 func traiterMessageFinSC(rcvmsg string) {
-
+	site_str := string(rcvmsg[2])
+	site, _ := strconv.Atoi(site_str)
+	horloge_str := string(rcvmsg[3])
+	horloge, _ := strconv.Atoi(horloge_str)
+	tabSC = utils.SupprimerMessageExclusionMutuelle(tabSC, site, horloge)
 }
 
 func traiterMessageRequete(rcvmsg string) {
-
+	dem_str := string(rcvmsg[1])
+	dem, _ := strconv.Atoi(dem_str)
+	site_str := string(rcvmsg[2])
+	site, _ := strconv.Atoi(site_str)
+	// Variable Site pas encore définis
+	if site == Site {
+		return
+	}
+	demande := utils.MessageExclusionMutuelle{Type: utils.TypeSC(dem), Estampille: utils.Estampille{site, H}}
+	tabSC = append(tabSC, demande)
+	sort.Sort(utils.MessageExclusionMutuelleSlice(tabSC))
+	estampille := utils.Estampille{Site: 1, Horloge: H}
+	envoyerMessageDemandeSC(utils.TypeSC(dem), estampille)
 }
 
 func traiterMessageLiberation(rcvmsg string) {

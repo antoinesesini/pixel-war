@@ -124,3 +124,21 @@ func Recaler(x, y int) int {
 	}
 	return x + 1
 }
+
+func (p MessageExclusionMutuelleSlice) Len() int      { return len(p) }
+func (p MessageExclusionMutuelleSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+func (p MessageExclusionMutuelleSlice) Less(i, j int) bool {
+	return p[i].Estampille.Horloge < p[j].Estampille.Horloge
+}
+
+func SupprimerMessageExclusionMutuelle(tab []MessageExclusionMutuelle, site int, horloge int) []MessageExclusionMutuelle {
+	var newTabSC []MessageExclusionMutuelle
+	for _, element := range tab {
+		estamp := element.Estampille
+		if estamp.Site == site && estamp.Horloge == horloge || element.Type == Accuse {
+		} else {
+			newTabSC = append(newTabSC, MessageExclusionMutuelle{Type: element.Type, Estampille: estamp})
+		}
+	}
+	return newTabSC
+}
