@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"container/list"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -23,26 +21,47 @@ func MessageToString(message Message) string {
 		c = "blanc"
 	}
 	return MessagePixelToString(message.Pixel) + sepM + sepP + "horloge" + sepP + strconv.Itoa(message.Horloge) +
-		sepM + sepP + "nom" + sepP + message.Nom + sepM + sepP + "couleur" + sepP + c +
-		sepM + sepP + "prepost" + sepP + strconv.FormatBool(message.Prepost)
+		sepM + sepP + "vectorielle" + sepP + HorlogeVectorielleToString(message.Vectorielle) + sepM + sepP + "nom" +
+		sepP + message.Nom + sepM + sepP + "couleur" + sepP + c + sepM + sepP + "prepost" + sepP +
+		strconv.FormatBool(message.Prepost)
 
+}
+
+func EtatLocalToString(etatLocal EtatLocal) string {
+	sep1 := "#"
+	sep2 := ";"
+	l := ""
+	for _, messagePixel := range etatLocal.ListMessagePixel {
+		l += "_"
+		l += MessagePixelToString(messagePixel)
+	}
+
+	return sep1 + sep2 + "nom" + sep2 + etatLocal.NomSite +
+		sep1 + sep2 + "vectorielle" + sep2 + HorlogeVectorielleToString(etatLocal.Vectorielle) +
+		sep1 + sep2 + "liste" + sep2 + l
 }
 
 func MessageEtatToString(etat MessageEtat) string {
 	sep1 := "~"
 	sep2 := ","
-	l := ""
-	for e := etat.EG.Front(); e != nil; e = e.Next() {
-		l += "_"
-		pixel, ok := e.Value.(MessagePixel)
-		if !ok {
-			fmt.Println("Conversion to MessagePixel failed")
-			return ""
-		}
-		l += MessagePixelToString(pixel)
+
+	return sep1 + sep2 + "etat" + sep2 + EtatLocalToString(etat.EtatLocal) + sep1 + sep2 + "bilan" + sep2 +
+		strconv.Itoa(etat.Bilan)
+}
+
+func HorlogeVectorielleToString(horloge HorlogeVectorielle) string {
+	sep1 := "_"
+	sep2 := ":"
+	str := ""
+
+	for site := range horloge {
+		str += sep1
+		str += site
+		str += sep2
+		str += strconv.Itoa(horloge[site])
 	}
 
-	return sep1 + sep2 + "etat" + sep2 + l + sep1 + sep2 + "bilan" + sep2 + strconv.Itoa(etat.Bilan)
+	return str
 }
 
 func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
@@ -80,6 +99,7 @@ func StringToMessagePixel(str string) MessagePixel {
 func StringToMessage(str string) Message {
 	messagepixel := StringToMessagePixel(str)
 	h, _ := strconv.Atoi(TrouverValeur(str, "horloge"))
+	hv := TrouverValeur(str, "vectorielle")
 	n := TrouverValeur(str, "nom")
 	cV := TrouverValeur(str, "couleur")
 	var c Couleur
@@ -89,24 +109,68 @@ func StringToMessage(str string) Message {
 		c = Blanc
 	}
 	prep, _ := strconv.ParseBool(TrouverValeur(str, "prepost"))
-	message := Message{messagepixel, h, n, c, prep}
+	message := Message{messagepixel, h, StringToHorlogeVectorielle(hv), n, c, prep}
 	return message
 }
 
 func StringToMessageEtat(str string) MessageEtat {
-	var l list.List
-	tabtousmesspix := TrouverValeur(str, "etat")
-	fmt.Println(tabtousmesspix)
-	tabtousmesspixsplit := strings.Split(tabtousmesspix, "_")
-	for _, messpixel := range tabtousmesspixsplit {
-		if messpixel != "" {
-			fmt.Println(messpixel)
-			l.PushBack(StringToMessagePixel(messpixel))
+	etatLocal := StringToEtatLocal(TrouverValeur(str, "etat"))
+	bilan, _ := strconv.Atoi(TrouverValeur(str, "bilan"))
+
+	return MessageEtat{etatLocal, bilan}
+
+}
+
+func StringToEtatLocal(str string) EtatLocal {
+	var liste []MessagePixel
+	listeMessagePixel := TrouverValeur(str, "liste")
+	strVectorielle := TrouverValeur(str, "vectorielle")
+	tabListeMessagePixel := strings.Split(listeMessagePixel, "_")
+
+	for _, strMessagePixel := range tabListeMessagePixel {
+		if strMessagePixel != "" {
+			liste = append(liste, StringToMessagePixel(strMessagePixel))
 		}
 	}
-	b, _ := strconv.Atoi(TrouverValeur(str, "bilan"))
-	messageetat := MessageEtat{l, b}
-	return messageetat
+
+	return EtatLocal{TrouverValeur(str, "nom"), StringToHorlogeVectorielle(strVectorielle), liste}
+}
+
+func StringToHorlogeVectorielle(str string) HorlogeVectorielle {
+	horloge := HorlogeVectorielle{}
+	listeSites := strings.Split(str, "_")
+
+	for _, strSite := range listeSites {
+		if strSite != "" {
+			hSite := strings.Split(strSite, ":")
+			horloge[hSite[0]], _ = strconv.Atoi(hSite[1])
+		}
+	}
+
+	return horloge
+}
+
+func MajHorlogeVectorielle(monNom string, locale, recue HorlogeVectorielle) HorlogeVectorielle {
+
+	// On met à jour les champs présents dans l'horloge locale
+	for site, valeurLocale := range locale {
+		valeurRecue, ok := recue[site]
+		if ok {
+			if valeurRecue > valeurLocale {
+				locale[site] = valeurRecue
+			}
+			delete(recue, site)
+		}
+	}
+	// On ajoute les champs restants dans l'horloge reçue
+	for site, valeurRecue := range recue {
+		locale[site] = valeurRecue
+	}
+
+	// On incrémente l'horloge du site local
+	locale[monNom]++
+
+	return locale
 }
 
 func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
@@ -116,6 +180,27 @@ func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
 	e := Estampille{s, h}
 	messageecxlumutuelle := MessageExclusionMutuelle{TypeSC(t), e}
 	return messageecxlumutuelle
+}
+func CoupureEstCoherente(etatGlobal EtatGlobal) bool {
+	isProcessed := make(map[string]bool)
+	mapMax := make(map[string]int)
+
+	for _, etatLocal := range etatGlobal.ListEtatLocal {
+		for site, horloge := range etatLocal.Vectorielle {
+			if mapMax[site] < horloge { // Si l'horloge est plus grande que le max enregistré
+				if isProcessed[site] { // Si on a déjà passé le site, la coupure n'est pas cohérente
+					return false
+				} else { // Sinon, on met à jour le max
+					mapMax[site] = horloge
+				}
+			} else if mapMax[site] > horloge && etatLocal.NomSite == site {
+				return false // Si le max du site est plus grand que l'horloge de ce site sur ce site, la coupure n'est pas cohérente
+			}
+		}
+		isProcessed[etatLocal.NomSite] = true // Le site a été process
+	}
+
+	return true
 }
 
 func Recaler(x, y int) int {

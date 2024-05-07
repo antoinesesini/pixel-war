@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,22 +8,25 @@ import (
 	"image/color"
 	"os"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 	"utils"
 )
 
 func frontend(msg utils.MessagePixel) {
-	SectionCritique := true
+	//SectionCritique := true
 	//recupPixelAChangerSansLeChangerNiEnLocalNiEnPrevenantLesAutres
-	MsgPixelTmp := utils.MessagePixelToString(msg)
+	//x := msg.PositionX
+	//y := msg.PositionY
+	//r := msg.Rouge
+	//g := msg.Vert
+	//b := msg.Bleu
 
 	//Keep the pixel
-	PixelTmp := utils.MessagePixel{x, y, r, g, b}
+	//PixelTmp := utils.MessagePixel{x, y, r, g, b}
 	//demandeSC = envoi d'un message demandeSC à l'app de control$
-	utils.MessageExclusionMutuelle {Type: 0,Estampille: (numSite, Horloge) } SecCrit
-	MessageSC( SecCrit )
+	//utils.MessageExclusionMutuelle {Type: 0,Estampille: (numSite, Horloge) } SecCrit
+	//MessageSC( SecCrit )
 
 	//Wait few minutes
 }
@@ -98,7 +100,7 @@ func main() {
 		}
 	}
 
-	colorWheel, _, err := ebitenutil.NewImageFromFile("color_wheel.png")
+	colorWheel, _, err := ebitenutil.NewImageFromFile("app-base/color_wheel.png")
 	if err != nil {
 		panic(err)
 	}
@@ -109,46 +111,15 @@ func main() {
 		SelectedColor: color.RGBA{R: 0, G: 0, B: 0, A: 0xFF},
 	}
 
-	go func() {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			line := scanner.Text()
-			parts := strings.Split(line, " ")
-			if len(parts) == 5 {
-				x, err := strconv.Atoi(parts[0])
-				if err != nil {
-					continue
-				}
-				y, err := strconv.Atoi(parts[1])
-				if err != nil {
-					continue
-				}
-				cr, err := strconv.Atoi(parts[2])
-				if err != nil {
-					continue
-				}
-				cg, err := strconv.Atoi(parts[3])
-				if err != nil {
-					continue
-				}
-				cb, err := strconv.Atoi(parts[4])
-				if err != nil {
-					continue
-				}
-				game.UpdateMatrix(x, y, uint8(cr), uint8(cg), uint8(cb))
-				fmt.Printf("Updated pixel at (%d, %d) to (%d, %d, %d)\n", x, y, cr, cg, cb)
-			}
-		}
-	}()
+	//Création de 2 go routines qui s'exécutent en parallèle
+	go sendperiodic()
+	go lecture(game)
 
 	ebiten.RunGame(game)
 
 	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowTitle("Pixel-War")
 
-	//Création de 2 go routines qui s'exécutent en parallèle
-	go sendperiodic()
-	go lecture(game)
 	//On décide de bloquer le programme principal
 	for {
 		time.Sleep(time.Duration(60) * time.Second)

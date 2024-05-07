@@ -1,7 +1,5 @@
 package utils
 
-import "container/list"
-
 // Définition des types
 const sepM = "/" //séparateur dans les messages
 const sepP = "=" //séparateur ddans les paires clé/valeur
@@ -22,19 +20,32 @@ type MessagePixel struct {
 }
 
 type Message struct {
-	Pixel   MessagePixel
-	Horloge int
-	Nom     string
-	Couleur Couleur
-	Prepost bool //false pour les messages normaux
+	Pixel       MessagePixel
+	Horloge     int
+	Vectorielle HorlogeVectorielle
+	Nom         string
+	Couleur     Couleur
+	Prepost     bool // false pour les messages normaux
+
 }
 
-type EtatGlobal list.List //Sous-entendu une liste de MessagePixel
+type EtatLocal struct {
+	NomSite          string
+	Vectorielle      HorlogeVectorielle
+	ListMessagePixel []MessagePixel
+}
+
+type EtatGlobal struct {
+	ListEtatLocal      []EtatLocal
+	ListMessagePrepost []Message
+}
 
 type MessageEtat struct {
-	EG    list.List
-	Bilan int
+	EtatLocal EtatLocal
+	Bilan     int
 }
+
+type HorlogeVectorielle map[string]int
 
 // Partition section critique
 

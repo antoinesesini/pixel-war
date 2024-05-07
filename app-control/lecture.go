@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"utils"
 )
@@ -15,7 +14,9 @@ func lecture() {
 		// On traite uniquement les messages qui ne commencent pas par un 'A'
 		if rcvmsg[0] != uint8('A') {
 			//TRAITEMENT DES MESSAGES DE CONTRÔLE
-			if utils.TrouverValeur(rcvmsg, "horloge") != "" {
+			if rcvmsg == "sauvegarde" {
+				traiterDebutSauvegarde()
+			} else if utils.TrouverValeur(rcvmsg, "horloge") != "" {
 				if utils.TrouverValeur(rcvmsg, "prepost") == "true" {
 					traiterMessagePrepost(rcvmsg)
 				} else {
@@ -36,6 +37,7 @@ func lecture() {
 // TRAITEMENT DES CONTRÔLES NORMAUX : on extrait le pixel que l'on exploite dans l'app-base et on fait suivre l'information
 // et tout cela avec les bonnes informations mises à jour dans le message : horloge, couleur
 func traiterMessageControle(rcvmsg string) {
+	monBilan--
 	message := utils.StringToMessage(rcvmsg)
 
 	if message.Nom != monNom { // On traite le message uniquement s'il ne vient pas de nous
@@ -47,16 +49,23 @@ func traiterMessageControle(rcvmsg string) {
 		message.Horloge = H
 
 		//ATTENTION ICI, METTRE À JOUR L'ÉTAT GLOBAL AVANT D'ENVOYER QUOI QUE CE SOIT
+		// Mise à jour de l'horloge vectorielle locale et mise à jour de sa valeur dans le message également
+		horlogeVectorielle = utils.MajHorlogeVectorielle(monNom, horlogeVectorielle, message.Vectorielle)
+		message.Vectorielle = horlogeVectorielle
 
 		//Avertissement d'une coupure demandée et actions en conséquence
+		// Première fois qu'on reçoit l'ordre de transmettre sa sauvegarde
 		if message.Couleur == utils.Jaune && maCouleur == utils.Blanc {
 			maCouleur = utils.Jaune
-			messageEtat := utils.MessageEtat{list.List(monEtatLocal), monBilan}
+			// On met à jour l'état local
+			monEtatLocal.ListMessagePixel = append(monEtatLocal.ListMessagePixel, messagePixel)
+			messageEtat := utils.MessageEtat{monEtatLocal, monBilan}
 			go envoyerMessage(utils.MessageEtatToString(messageEtat))
 			//Réception d'un message prépost pas encore marqué comme prépost
 		} else if message.Couleur == utils.Blanc && maCouleur == utils.Jaune {
 			if jeSuisInitiateur {
-				// Ajouter le message reçu à la sauvegarde générale
+				// On ajoute le message reçu à la sauvegarde générale
+				etatGlobal.ListMessagePrepost = append(etatGlobal.ListMessagePrepost, message)
 			} else {
 				messagePrepost := message
 				messagePrepost.Prepost = true
@@ -72,8 +81,17 @@ func traiterMessageControle(rcvmsg string) {
 
 func traiterMessagePrepost(rcvmsg string) {
 	if jeSuisInitiateur {
-		//message := utils.StringToMessage(rcvmsg)
-		// Traiter l'ajout du message à l'état de sauvegarde
+		nbMessagesAttendus--
+
+		// On ajoute le message prepost à la sauvegarde générale
+		message := utils.StringToMessage(rcvmsg)
+		etatGlobal.ListMessagePrepost = append(etatGlobal.ListMessagePrepost, message)
+
+		if nbEtatsAttendus == 0 && nbMessagesAttendus == 0 {
+			// FIN DE L'ALGORITHME DE SAUVEGARDE
+			utils.DisplayInfo(monNom, "traiterMessagePrepost", "Sauvegarde complétée")
+		}
+
 	} else {
 		go envoyerMessage(rcvmsg) // On fait suivre le message sur l'anneau
 	}
@@ -81,18 +99,45 @@ func traiterMessagePrepost(rcvmsg string) {
 
 func traiterMessageEtat(rcvmsg string) {
 	if jeSuisInitiateur {
-		// Traiter l'ajout de l'état à la sauvegarde générale
+		messageEtat := utils.StringToMessageEtat(rcvmsg)
+		// On ajoute l'état local reçu à la sauvegarde générale
+		etatGlobal.ListEtatLocal = append(etatGlobal.ListEtatLocal, messageEtat.EtatLocal)
+
+		nbEtatsAttendus--
+		nbMessagesAttendus = nbMessagesAttendus - messageEtat.Bilan
+
+		if nbEtatsAttendus == 0 && nbMessagesAttendus == 0 {
+			// FIN DE L'ALGORITHME DE SAUVEGARDE
+			utils.DisplayInfo(monNom, "traiterMessageEtat", "Sauvegarde complétée")
+		}
+
 	} else {
 		go envoyerMessage(rcvmsg)
 	}
 }
 
 func traiterMessagePixel(rcvmsg string) {
+	monBilan++
 	messagePixel := utils.StringToMessagePixel(rcvmsg)
 	H++
-	//ATTENTION ICI, METTRE À JOUR L'ÉTAT GLOBAL
-	message := utils.Message{messagePixel, H, monNom, maCouleur, false}
+	horlogeVectorielle[monNom]++
+
+	// Mise à jour de l'état local
+	monEtatLocal.ListMessagePixel = append(monEtatLocal.ListMessagePixel, messagePixel)
+
+	message := utils.Message{messagePixel, H, horlogeVectorielle, monNom, maCouleur, false}
 	go envoyerMessageControle(message)
+}
+
+func traiterDebutSauvegarde() {
+	utils.DisplayWarning(monNom, "traiterDebutSauvegarde", "debut de la sauvegarde")
+	maCouleur = utils.Jaune
+	jeSuisInitiateur = true
+	nbEtatsAttendus = N - 1
+	nbMessagesAttendus = monBilan
+
+	// On ajoute l'état local à la sauvegarde générale
+	etatGlobal.ListEtatLocal = append(etatGlobal.ListEtatLocal, monEtatLocal)
 }
 
 func traiterMessageDemandeSC(rcvmsg string) {
