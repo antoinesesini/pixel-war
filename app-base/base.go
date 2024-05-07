@@ -15,6 +15,20 @@ import (
 	"utils"
 )
 
+func frontend(msg utils.MessagePixel) {
+	SectionCritique := true
+	//recupPixelAChangerSansLeChangerNiEnLocalNiEnPrevenantLesAutres
+	MsgPixelTmp := utils.MessagePixelToString(msg)
+
+	//Keep the pixel
+	PixelTmp := utils.MessagePixel{x, y, r, g, b}
+	//demandeSC = envoi d'un message demandeSC à l'app de control$
+	utils.MessageExclusionMutuelle {Type: 0,Estampille: (numSite, Horloge) } SecCrit
+	MessageSC( SecCrit )
+
+	//Wait few minutes
+}
+
 // Le programme envoie périodiquement des messages sur stdout
 func sendperiodic() {
 	for i := 0; i < 4; i++ {
@@ -38,6 +52,9 @@ func lecture(game *utils.Game) {
 		fmt.Scanln(&rcvmsg)
 
 		if rcvmsg[0] == uint8('A') { // On traite le message s'il commence par un 'A'
+			//Différencier les messages de sections des messages pixels
+			//Si message de type debutSC, récup pixel dans le fifo et le changer en local et prévenir les autres
+			//Si message pixel faire maj locale
 			utils.DisplayError(monNom, "lecture", "Réception de : "+rcvmsg[1:])
 			mutex.Lock()
 			messagePixel := utils.StringToMessagePixel(rcvmsg[1:])

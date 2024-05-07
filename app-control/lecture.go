@@ -94,3 +94,23 @@ func traiterMessagePixel(rcvmsg string) {
 	message := utils.Message{messagePixel, H, monNom, maCouleur, false}
 	go envoyerMessageControle(message)
 }
+
+func traiterMessageDemandeSC(rcvmsg string) {
+
+}
+
+func traiterMessageFinSC(rcvmsg string) {
+
+}
+
+func traiterMessageRequete(rcvmsg string) {
+
+}
+
+func traiterMessageLiberation(rcvmsg string) {
+
+}
+
+func traiterMessageAccuse(rcvmsg string) {
+
+}
