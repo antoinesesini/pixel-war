@@ -3,8 +3,6 @@ package main
 import (
 	"container/list"
 	"fmt"
-	"sort"
-	"strconv"
 	"utils"
 )
 
@@ -99,45 +97,74 @@ func traiterMessagePixel(rcvmsg string) {
 	go envoyerMessageControle(message)
 }
 
+//// PARTIE EXCLUSION MUTUELLE
+
+// Message commencant par un B, APP Base -> APP CONTROL
 func traiterMessageDemandeSC(rcvmsg string) {
-	dem_str := string(rcvmsg[1])
-	dem, _ := strconv.Atoi(dem_str)
-	site := 1
-	demande := utils.MessageExclusionMutuelle{Type: utils.TypeSC(dem), Estampille: utils.Estampille{site, H}}
-	tabSC = append(tabSC, demande)
-	sort.Sort(utils.MessageExclusionMutuelleSlice(tabSC))
-	estampille := utils.Estampille{Site: 1, Horloge: H}
-	envoyerMessageDemandeSC(utils.TypeSC(dem), estampille)
-}
-
-func traiterMessageFinSC(rcvmsg string) {
-	site_str := string(rcvmsg[2])
-	site, _ := strconv.Atoi(site_str)
-	horloge_str := string(rcvmsg[3])
-	horloge, _ := strconv.Atoi(horloge_str)
-	tabSC = utils.SupprimerMessageExclusionMutuelle(tabSC, site, horloge)
-}
-
-func traiterMessageRequete(rcvmsg string) {
-	dem_str := string(rcvmsg[1])
-	dem, _ := strconv.Atoi(dem_str)
-	site_str := string(rcvmsg[2])
-	site, _ := strconv.Atoi(site_str)
-	// Variable Site pas encore définis
-	if site == Site {
-		return
+	H++
+	demande := utils.StringToMessageElementExclusionMutuelle(rcvmsg)
+	tabSC[Site] = utils.MessageExclusionMutuelle{
+		Type:       demande,
+		Estampille: utils.Estampille{Site: Site, Horloge: H},
 	}
-	demande := utils.MessageExclusionMutuelle{Type: utils.TypeSC(dem), Estampille: utils.Estampille{site, H}}
-	tabSC = append(tabSC, demande)
-	sort.Sort(utils.MessageExclusionMutuelleSlice(tabSC))
-	estampille := utils.Estampille{Site: 1, Horloge: H}
-	envoyerMessageDemandeSC(utils.TypeSC(dem), estampille)
+	if utils.QuestionEntreeSC(Site, tabSC) {
+		envoyerMessageSCBase(tabSC[Site].Type)
+	}
 }
 
+// Message commencant par un D
+func traiterMessageFinSC(rcvmsg string) {
+	fin := utils.StringToMessageExclusionMutuelle(rcvmsg)
+	H++
+	tabSC[fin.Estampille.Site] = utils.MessageExclusionMutuelle{
+		Type:       fin.Type,
+		Estampille: fin.Estampille,
+	}
+	if utils.QuestionEntreeSC(Site, tabSC) {
+		envoyerMessageSCBase(tabSC[Site].Type)
+	}
+}
+
+// Message commencant par un C
+func traiterMessageRequete(rcvmsg string) {
+	demande := utils.StringToMessageExclusionMutuelle(rcvmsg)
+	H = max(demande.Estampille.Horloge, H) + 1
+	tabSC[demande.Estampille.Site] = utils.MessageExclusionMutuelle{
+		Type:       utils.Requete,
+		Estampille: demande.Estampille,
+	}
+	envoyerMessageSCControle(demande)
+	if utils.QuestionEntreeSC(Site, tabSC) {
+		envoyerMessageSCBase(tabSC[Site].Type)
+	}
+}
+
+// Message commencant par un C
 func traiterMessageLiberation(rcvmsg string) {
+	liberation := utils.StringToMessageExclusionMutuelle(rcvmsg)
+	H = max(liberation.Estampille.Horloge, H) + 1
 
+	tabSC[liberation.Estampille.Site] = utils.MessageExclusionMutuelle{
+		Type:       liberation.Type,
+		Estampille: liberation.Estampille,
+	}
+	if utils.QuestionEntreeSC(Site, tabSC) {
+		envoyerMessageSCBase(tabSC[Site].Type)
+	}
 }
 
+// Message commencant par un C
 func traiterMessageAccuse(rcvmsg string) {
-
+	mess := utils.StringToMessageExclusionMutuelle(rcvmsg)
+	H = max(mess.Estampille.Horloge, H) + 1
+	if tabSC[mess.Estampille.Site].Type != utils.Requete {
+		tabSC[mess.Estampille.Site] = utils.MessageExclusionMutuelle{
+			Type:       mess.Type,
+			Estampille: mess.Estampille,
+		}
+	}
+	tabSC[mess.Estampille.Site] = utils.MessageExclusionMutuelle{Type: utils.Accuse, Estampille: utils.Estampille{Site: mess.Estampille.Site, Horloge: H}}
+	if utils.QuestionEntreeSC(Site, tabSC) {
+		envoyerMessageSCBase(tabSC[Site].Type)
+	}
 }

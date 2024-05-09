@@ -45,11 +45,6 @@ func MessageEtatToString(etat MessageEtat) string {
 	return sep1 + sep2 + "etat" + sep2 + l + sep1 + sep2 + "bilan" + sep2 + strconv.Itoa(etat.Bilan)
 }
 
-func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
-	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle.Type)) + sepM + sepP + "estampilleSite" + sepP +
-		strconv.Itoa(exclumutuelle.Estampille.Site) + sepM + sepP + "estampilleHorloge" + sepP + strconv.Itoa(exclumutuelle.Estampille.Horloge)
-}
-
 func TrouverValeur(message string, cle string) string {
 	if len(message) < 4 {
 		return ""
@@ -109,6 +104,25 @@ func StringToMessageEtat(str string) MessageEtat {
 	return messageetat
 }
 
+func Recaler(x, y int) int {
+	if x < y {
+		return y + 1
+	}
+	return x + 1
+}
+
+////// PARTIE EXLCUSION MUTUELLE
+
+// Permet de transformer un message string en message Exclusion mutuelle
+func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
+	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle.Type)) + sepM + sepP + "estampilleSite" + sepP +
+		strconv.Itoa(exclumutuelle.Estampille.Site) + sepM + sepP + "estampilleHorloge" + sepP + strconv.Itoa(exclumutuelle.Estampille.Horloge)
+}
+
+func MessageElementExclusionMutuelleToString(exclumutuelle TypeSC) string {
+	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle))
+}
+
 func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
 	t, _ := strconv.Atoi(TrouverValeur(str, "typeSC"))
 	s, _ := strconv.Atoi(TrouverValeur(str, "estampilleSite"))
@@ -117,28 +131,25 @@ func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
 	messageecxlumutuelle := MessageExclusionMutuelle{TypeSC(t), e}
 	return messageecxlumutuelle
 }
-
-func Recaler(x, y int) int {
-	if x < y {
-		return y + 1
-	}
-	return x + 1
+func StringToMessageElementExclusionMutuelle(str string) TypeSC {
+	t, _ := strconv.Atoi(TrouverValeur(str, "typeSC"))
+	messageecxlumutuelle := TypeSC(t)
+	return messageecxlumutuelle
 }
 
-func (p MessageExclusionMutuelleSlice) Len() int      { return len(p) }
-func (p MessageExclusionMutuelleSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
-func (p MessageExclusionMutuelleSlice) Less(i, j int) bool {
-	return p[i].Estampille.Horloge < p[j].Estampille.Horloge
-}
-
-func SupprimerMessageExclusionMutuelle(tab []MessageExclusionMutuelle, site int, horloge int) []MessageExclusionMutuelle {
-	var newTabSC []MessageExclusionMutuelle
-	for _, element := range tab {
-		estamp := element.Estampille
-		if estamp.Site == site && estamp.Horloge == horloge || element.Type == Accuse {
+func QuestionEntreeSC(site int, tabSC []MessageExclusionMutuelle) bool {
+	cpt := 0
+	if tabSC[site].Type == Requete {
+		for otherSites := 0; otherSites < len(tabSC); otherSites++ {
+			if otherSites != site && tabSC[otherSites].Estampille.Horloge > tabSC[site].Estampille.Horloge {
+				cpt++
+			}
+		}
+		if cpt == len(tabSC)-1 {
+			return true
 		} else {
-			newTabSC = append(newTabSC, MessageExclusionMutuelle{Type: element.Type, Estampille: estamp})
+			return false
 		}
 	}
-	return newTabSC
+	return false
 }

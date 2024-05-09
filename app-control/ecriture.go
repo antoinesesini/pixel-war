@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"utils"
 )
 
@@ -23,18 +22,15 @@ func envoyerMessageBase(messagePixel utils.MessagePixel) {
 	envoyerMessage("A" + utils.MessagePixelToString(messagePixel))
 }
 
-func envoyerMessageDemandeSC(SC utils.TypeSC, estampille utils.Estampille) {
-	msg := "C"
-	msg = strconv.Itoa(int(SC))
-	msg += strconv.Itoa(estampille.Site)
-	msg += strconv.Itoa(estampille.Horloge)
+// /// PARTIE EXCLUSION MUTUELLE
+
+// Traite accusé, demande et libération, APP CONTROL -> APP CONTROL
+func envoyerMessageSCControle(msgSC utils.MessageExclusionMutuelle) {
+	msg := ("C" + utils.MessageExclusionMutuelleToString(msgSC))
 	envoyerMessage(msg)
 }
 
-func envoyerMessageFinSC(SC utils.TypeSC, estampille utils.Estampille) {
-	msg := "C"
-	msg = strconv.Itoa(int(SC))
-	msg += strconv.Itoa(estampille.Site)
-	msg += strconv.Itoa(estampille.Horloge)
-	envoyerMessage(msg)
+func envoyerMessageSCBase(msgSC utils.ElementExclusionMutuelle) {
+	msg := ("B" + utils.MessageElementExclusionMutuelleToString(msgSC.Type))
+	fmt.Println(msg)
 }

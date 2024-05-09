@@ -15,6 +15,8 @@ import (
 	"utils"
 )
 
+
+/// SECTION CRITIQUE
 func frontend(msg utils.MessagePixel) {
 	SectionCritique := true
 	//recupPixelAChangerSansLeChangerNiEnLocalNiEnPrevenantLesAutres
@@ -25,7 +27,7 @@ func frontend(msg utils.MessagePixel) {
 
 	//demandeSC = envoi d'un message demandeSC à l'app de control$
 	SecCrit := utils.Requete
-	envoyerMessageSC(SecCrit)
+	envoyerMessageBaseSC(SecCrit)
 	for SectionCritique == true {
 		si je recois un message comme quoi la SectionCritique est disponible
 			uPDATE PixelTmp Dans la matrice actuelle
@@ -38,6 +40,16 @@ func frontend(msg utils.MessagePixel) {
 	//Wait few minutes
 
 }
+// Fonction qui permet d'envoyer un message concernant l'accès / libération de la section critique
+func envoyerMessageBaseSC(Type utils.TypeSC) {
+	fmt.Println("B",Type)
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 // Le programme envoie périodiquement des messages sur stdout
 func sendperiodic() {
@@ -53,10 +65,7 @@ func envoyerPixel(positionX int, positionY int, rouge int, vert int, bleu int) {
 	messagePixel := utils.MessagePixel{positionX, positionY, rouge, vert, bleu}
 	fmt.Println(utils.MessagePixelToString(messagePixel))
 }
-// Fonction qui permet d'envoyer un message concernant l'accès / libération de la section critique
-func envoyerMessageSC(Type utils.TypeSC) {
-	fmt.Println("B",Type)
-}
+
 
 // Quand le programme n'est pas en train d'écrire, il lit
 func lecture(game *utils.Game) {
@@ -82,6 +91,9 @@ func lecture(game *utils.Game) {
 			game.UpdateMatrix(x, y, uint8(cr), uint8(cg), uint8(cb))
 			mutex.Unlock()
 			envoyerPixel(x, y, cr, cg, cb)
+
+		} else {
+
 		}
 		rcvmsg = ""
 	}
@@ -149,6 +161,7 @@ func main() {
 				if err != nil {
 					continue
 				}
+
 				game.UpdateMatrix(x, y, uint8(cr), uint8(cg), uint8(cb))
 				fmt.Printf("Updated pixel at (%d, %d) to (%d, %d, %d)\n", x, y, cr, cg, cb)
 			}
