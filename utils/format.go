@@ -122,3 +122,21 @@ func StringToHorlogeVectorielle(str string) HorlogeVectorielle {
 
 	return horloge
 }
+
+///////////////////////////
+// MessageExclusionMutuelle
+///////////////////////////
+
+func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
+	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle.Type)) + sepM + sepP + "estampilleSite" + sepP +
+		strconv.Itoa(exclumutuelle.Estampille.Site) + sepM + sepP + "estampilleHorloge" + sepP + strconv.Itoa(exclumutuelle.Estampille.Horloge)
+}
+
+func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
+	t, _ := strconv.Atoi(TrouverValeur(str, "typeSC"))
+	s, _ := strconv.Atoi(TrouverValeur(str, "estampilleSite"))
+	h, _ := strconv.Atoi(TrouverValeur(str, "estampilleHorloge"))
+	e := Estampille{s, h}
+	messageecxlumutuelle := MessageExclusionMutuelle{TypeSC(t), e}
+	return messageecxlumutuelle
+}

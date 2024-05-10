@@ -113,3 +113,20 @@ func CoupureEstCoherente(etatGlobal EtatGlobal) bool {
 
 	return true
 }
+
+func QuestionEntreeSC(site int, tabSC []MessageExclusionMutuelle) bool {
+	cpt := 0
+	if tabSC[site].Type == Requete {
+		for otherSites := 0; otherSites < len(tabSC); otherSites++ {
+			if otherSites != site && tabSC[otherSites].Estampille.Horloge > tabSC[site].Estampille.Horloge {
+				cpt++
+			}
+		}
+		if cpt == len(tabSC)-1 {
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
+}

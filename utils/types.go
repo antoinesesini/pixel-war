@@ -36,3 +36,23 @@ type EtatLocal struct {
 type EtatGlobal []EtatLocal
 
 type HorlogeVectorielle map[string]int
+
+type Estampille struct {
+	Site    int
+	Horloge int
+}
+
+type TypeSC int
+
+const (
+	Requete    TypeSC = 0
+	Liberation TypeSC = 1
+	Accuse     TypeSC = 2
+)
+
+type MessageExclusionMutuelle struct {
+	Type       TypeSC
+	Estampille Estampille
+}
+
+type ListMessageExclusionMutuelle []MessageExclusionMutuelle

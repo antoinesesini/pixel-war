@@ -18,6 +18,7 @@ var jeSuisInitiateur = false
 var monEtatLocal utils.EtatLocal
 var etatGlobal utils.EtatGlobal
 var nbEtatsAttendus = 0
+var tabSC []utils.MessageExclusionMutuelle
 
 var N = 3
 
@@ -31,6 +32,12 @@ func main() {
 	horlogeVectorielle[monNom] = 0
 	monEtatLocal.NomSite = monNom
 	monEtatLocal.Vectorielle = horlogeVectorielle
+
+	i := 1
+	for _, e := range tabSC {
+		e.Type = utils.Liberation
+		e.Estampille = utils.Estampille{Site: i, Horloge: 0}
+	}
 
 	go lecture()
 	for {

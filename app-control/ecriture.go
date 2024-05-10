@@ -26,3 +26,14 @@ func envoyerMessageEtat(etatLocal utils.EtatLocal) {
 func envoyerMessageBase(messagePixel utils.MessagePixel) {
 	envoyerMessage("A" + utils.MessagePixelToString(messagePixel))
 }
+
+// Traite accusé, demande et libération, APP CONTROL -> APP CONTROL
+func envoyerMessageSCControle(msgSC utils.MessageExclusionMutuelle) {
+	msg := ("C" + utils.MessageExclusionMutuelleToString(msgSC))
+	envoyerMessage(msg)
+}
+
+func envoyerMessageSCBase(msgSC utils.ElementExclusionMutuelle) {
+	msg := ("B" + utils.MessageElementExclusionMutuelleToString(msgSC.Type))
+	fmt.Println(msg)
+}
