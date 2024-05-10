@@ -100,6 +100,7 @@ func traiterMessagePixel(rcvmsg string) {
 //// PARTIE EXCLUSION MUTUELLE
 
 // Message commencant par un B, APP Base -> APP CONTROL
+// / A REPRENDRE
 func traiterMessageDemandeSC(rcvmsg string) {
 	H++
 	demande := utils.StringToMessageElementExclusionMutuelle(rcvmsg)
@@ -107,9 +108,11 @@ func traiterMessageDemandeSC(rcvmsg string) {
 		Type:       demande,
 		Estampille: utils.Estampille{Site: Site, Horloge: H},
 	}
-	if utils.QuestionEntreeSC(Site, tabSC) {
-		envoyerMessageSCBase(tabSC[Site].Type)
-	}
+	/*
+		if utils.QuestionEntreeSC(Site, tabSC) {
+			envoyerMessageSCBase(tabSC[Site].Type)
+		}
+	*/
 }
 
 // Message commencant par un D
@@ -120,6 +123,9 @@ func traiterMessageFinSC(rcvmsg string) {
 		Type:       fin.Type,
 		Estampille: fin.Estampille,
 	}
+	// A RAJOUTER SENS MESSAGE
+	envoyerMessageSCControle(fin)
+
 	if utils.QuestionEntreeSC(Site, tabSC) {
 		envoyerMessageSCBase(tabSC[Site].Type)
 	}
@@ -134,6 +140,7 @@ func traiterMessageRequete(rcvmsg string) {
 		Estampille: demande.Estampille,
 	}
 	envoyerMessageSCControle(demande)
+
 	if utils.QuestionEntreeSC(Site, tabSC) {
 		envoyerMessageSCBase(tabSC[Site].Type)
 	}
@@ -148,6 +155,7 @@ func traiterMessageLiberation(rcvmsg string) {
 		Type:       liberation.Type,
 		Estampille: liberation.Estampille,
 	}
+	envoyerMessageSCControle(liberation)
 	if utils.QuestionEntreeSC(Site, tabSC) {
 		envoyerMessageSCBase(tabSC[Site].Type)
 	}

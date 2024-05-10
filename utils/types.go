@@ -36,7 +36,7 @@ type MessageEtat struct {
 	Bilan int
 }
 
-// Partition section critique
+/////////////// Partition section critique
 
 // Estampille
 type Estampille struct {
@@ -59,6 +59,7 @@ type MessageExclusionMutuelle struct {
 	Estampille Estampille
 }
 
+// /// A reprendre
 type ElementExclusionMutuelle struct {
 	Type    TypeSC
 	Horloge int
