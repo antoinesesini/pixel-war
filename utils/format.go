@@ -64,15 +64,17 @@ func StringToMessage(str string) Message {
 ////////////
 
 func EtatLocalToString(etatLocal EtatLocal) string {
+	sep1 := "~"
+	sep2 := ";"
 	l := ""
 	for _, messagePixel := range etatLocal.ListMessagePixel {
 		l += "_"
 		l += MessagePixelToString(messagePixel)
 	}
 
-	return sepM + sepP + "nom" + sepP + etatLocal.NomSite +
-		sepM + sepP + "vectorielle" + sepP + HorlogeVectorielleToString(etatLocal.Vectorielle) +
-		sepM + sepP + "liste" + sepP + l
+	return sep1 + sep2 + "nom" + sep2 + etatLocal.NomSite +
+		sep1 + sep2 + "vectorielle" + sep2 + HorlogeVectorielleToString(etatLocal.Vectorielle) +
+		sep1 + sep2 + "liste" + sep2 + l
 }
 
 func StringToEtatLocal(str string) EtatLocal {

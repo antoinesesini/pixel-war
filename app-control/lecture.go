@@ -26,7 +26,7 @@ func lecture() {
 				// Traitement des messages de contrôle
 			} else if utils.TrouverValeur(rcvmsg, "horloge") != "" {
 				traiterMessageControle(rcvmsg)
-			} else if utils.TrouverValeur(rcvmsg, "etat") != "" {
+			} else if utils.TrouverValeur(rcvmsg, "liste") != "" {
 				traiterMessageEtat(rcvmsg)
 			} else {
 				traiterMessagePixel(rcvmsg)
@@ -86,7 +86,6 @@ func traiterMessageEtat(rcvmsg string) {
 		return
 	}
 
-	utils.DisplayError(monNom, "Etat", "MessageEtat recu")
 	etatLocal := utils.StringToEtatLocal(rcvmsg)
 
 	// On ajoute l'état local reçu à la sauvegarde générale

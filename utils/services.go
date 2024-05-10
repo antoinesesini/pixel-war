@@ -71,7 +71,7 @@ func MajEtatLocal(etatLocal EtatLocal, newMessagePixel MessagePixel) EtatLocal {
 }
 
 func CopyEtatLocal(etatLocal EtatLocal) EtatLocal {
-	copie := EtatLocal{
+	var copie = EtatLocal{
 		NomSite:          etatLocal.NomSite,
 		Vectorielle:      etatLocal.Vectorielle,
 		ListMessagePixel: []MessagePixel{},
