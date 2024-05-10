@@ -40,7 +40,6 @@ func lecture() {
 // et tout cela avec les bonnes informations mises à jour dans le message : horloge, couleur
 func traiterMessageControle(rcvmsg string) {
 	message := utils.StringToMessage(rcvmsg)
-	monBilan--
 
 	// On traite le message uniquement s'il ne vient pas de nous
 	if message.Nom == monNom {
@@ -75,10 +74,8 @@ func traiterMessageControle(rcvmsg string) {
 	monEtatLocal = utils.MajEtatLocal(monEtatLocal, messagePixel)
 	monEtatLocal.Vectorielle = horlogeVectorielle
 
-	go envoyerMessageControle(message) // Pour la prochaine app de contrôle de l'anneau
-	monBilan++
+	go envoyerMessageControle(message)  // Pour la prochaine app de contrôle de l'anneau
 	go envoyerMessageBase(messagePixel) // Pour l'app de base
-	utils.DisplayInfo(monNom, "Controle", "monBilanActuel = "+strconv.Itoa(int(monBilan)))
 }
 
 func traiterMessageEtat(rcvmsg string) {
@@ -97,7 +94,7 @@ func traiterMessageEtat(rcvmsg string) {
 
 	nbEtatsAttendus--
 
-	utils.DisplayError(monNom, "Etat", "nbEtatsAttendus="+strconv.Itoa(nbEtatsAttendus)+" ; nbMessagesAttendus="+strconv.Itoa(nbMessagesAttendus))
+	utils.DisplayError(monNom, "Etat", "nbEtatsAttendus="+strconv.Itoa(nbEtatsAttendus))
 	if nbEtatsAttendus == 0 {
 		finSauvegarde()
 	}
@@ -117,8 +114,6 @@ func traiterMessagePixel(rcvmsg string) {
 
 	message := utils.Message{messagePixel, H, horlogeVectorielle, monNom, maCouleur}
 	go envoyerMessageControle(message)
-	monBilan++
-	utils.DisplayInfo(monNom, "Pixel", "monBilanActuel = "+strconv.Itoa(int(monBilan)))
 }
 
 func traiterDebutSauvegarde() {
@@ -126,9 +121,8 @@ func traiterDebutSauvegarde() {
 	maCouleur = utils.Jaune
 	jeSuisInitiateur = true
 	nbEtatsAttendus = N - 1
-	nbMessagesAttendus = monBilan
 
-	utils.DisplayError(monNom, "Debut", "nbEtatsAttendus="+strconv.Itoa(nbEtatsAttendus)+" ; nbMessagesAttendus="+strconv.Itoa(nbMessagesAttendus))
+	utils.DisplayError(monNom, "Debut", "nbEtatsAttendus="+strconv.Itoa(nbEtatsAttendus))
 
 	// On ajoute l'état local à la sauvegarde générale
 	for _, mp := range monEtatLocal.ListMessagePixel {

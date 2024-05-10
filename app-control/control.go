@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"strconv"
 	"sync"
@@ -18,9 +17,7 @@ var maCouleur = utils.Blanc
 var jeSuisInitiateur = false
 var monEtatLocal utils.EtatLocal
 var etatGlobal utils.EtatGlobal
-var monBilan = 0
 var nbEtatsAttendus = 0
-var nbMessagesAttendus = 0
 
 var N = 3
 
@@ -28,7 +25,6 @@ var pNom = flag.String("n", "controle", "nom")
 var monNom string
 
 func main() {
-	fmt.Println("yo")
 	flag.Parse()
 	monNom = *pNom + "-" + strconv.Itoa(os.Getpid())
 
