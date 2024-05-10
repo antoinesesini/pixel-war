@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strconv"
 	"sync"
@@ -27,16 +28,16 @@ var pNom = flag.String("n", "controle", "nom")
 var monNom string
 
 func main() {
+	fmt.Println("yo")
 	flag.Parse()
 	monNom = *pNom + "-" + strconv.Itoa(os.Getpid())
 
 	horlogeVectorielle[monNom] = 0
 	monEtatLocal.NomSite = monNom
 	monEtatLocal.Vectorielle = horlogeVectorielle
-	
+
 	go lecture()
 	for {
 		time.Sleep(time.Duration(60) * time.Second)
 	} // Pour attendre la fin des goroutines...
-
 }

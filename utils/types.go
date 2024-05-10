@@ -25,7 +25,6 @@ type Message struct {
 	Vectorielle HorlogeVectorielle
 	Nom         string
 	Couleur     Couleur
-	Prepost     bool // false pour les messages normaux
 }
 
 type EtatLocal struct {
@@ -34,14 +33,6 @@ type EtatLocal struct {
 	ListMessagePixel []MessagePixel
 }
 
-type EtatGlobal struct {
-	ListEtatLocal      []EtatLocal
-	ListMessagePrepost []Message
-}
-
-type MessageEtat struct {
-	EtatLocal EtatLocal
-	Bilan     int
-}
+type EtatGlobal []EtatLocal
 
 type HorlogeVectorielle map[string]int

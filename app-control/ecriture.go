@@ -18,8 +18,8 @@ func envoyerMessageControle(message utils.Message) {
 }
 
 // Envoi un type MessageEtat pour les applis de contrôle
-func envoyerMessageEtat(messageEtat utils.MessageEtat) {
-	envoyerMessage(utils.MessageEtatToString(messageEtat))
+func envoyerMessageEtat(etatLocal utils.EtatLocal) {
+	envoyerMessage(utils.EtatLocalToString(etatLocal))
 }
 
 // Envoi un type MessagePixel pour l'appli de base
