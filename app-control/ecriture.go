@@ -30,7 +30,7 @@ func envoyerMessageSCControle(msgSC utils.MessageExclusionMutuelle) {
 	envoyerMessage(msg)
 }
 
-func envoyerMessageSCBase(msgSC utils.ElementExclusionMutuelle) {
-	msg := ("B" + utils.MessageElementExclusionMutuelleToString(msgSC.Type))
+func envoyerMessageSCBase(msgSC utils.TypeSC) {
+	msg := ("B" + utils.MessageTypeSC(msgSC))
 	fmt.Println(msg)
 }

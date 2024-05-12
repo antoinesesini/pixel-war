@@ -60,9 +60,11 @@ type MessageExclusionMutuelle struct {
 }
 
 // /// A reprendre
+/*
 type ElementExclusionMutuelle struct {
 	Type    TypeSC
 	Horloge int
+type MessageExclusionMutuelleSlice []MessageExclusionMutuelle
 }
 
-type MessageExclusionMutuelleSlice []MessageExclusionMutuelle
+*/

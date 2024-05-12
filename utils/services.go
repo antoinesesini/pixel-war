@@ -111,7 +111,7 @@ func Recaler(x, y int) int {
 	return x + 1
 }
 
-////// PARTIE EXLCUSION MUTUELLE
+////// PARTIE EXLCUSION MUTUELLE SERVICES GO
 
 // Permet de transformer un message string en message Exclusion mutuelle
 func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) string {
@@ -119,7 +119,7 @@ func MessageExclusionMutuelleToString(exclumutuelle MessageExclusionMutuelle) st
 		strconv.Itoa(exclumutuelle.Estampille.Site) + sepM + sepP + "estampilleHorloge" + sepP + strconv.Itoa(exclumutuelle.Estampille.Horloge)
 }
 
-func MessageElementExclusionMutuelleToString(exclumutuelle TypeSC) string {
+func MessageTypeSC(exclumutuelle TypeSC) string {
 	return sepM + sepP + "typeSC" + sepP + strconv.Itoa(int(exclumutuelle))
 }
 
@@ -131,7 +131,7 @@ func StringToMessageExclusionMutuelle(str string) MessageExclusionMutuelle {
 	messageecxlumutuelle := MessageExclusionMutuelle{TypeSC(t), e}
 	return messageecxlumutuelle
 }
-func StringToMessageElementExclusionMutuelle(str string) TypeSC {
+func StringToMessageTypeSC(str string) TypeSC {
 	t, _ := strconv.Atoi(TrouverValeur(str, "typeSC"))
 	messageecxlumutuelle := TypeSC(t)
 	return messageecxlumutuelle

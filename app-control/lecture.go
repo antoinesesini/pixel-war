@@ -28,12 +28,11 @@ func lecture() {
 				utils.DisplayWarning(monNom, "lecture", "Message pixel reçu : "+rcvmsg)
 				traiterMessagePixel(rcvmsg)
 			}
+			// TO DO implémenter le traitement B et C
 		}
 		mutex.Unlock()
 	}
 }
-
-// TO DO implémenter le traitement B
 
 // TRAITEMENT DES CONTRÔLES NORMAUX : on extrait le pixel que l'on exploite dans l'app-base et on fait suivre l'information
 // et tout cela avec les bonnes informations mises à jour dans le message : horloge, couleur
@@ -99,23 +98,19 @@ func traiterMessagePixel(rcvmsg string) {
 
 //// PARTIE EXCLUSION MUTUELLE
 
-// Message commencant par un B, APP Base -> APP CONTROL
-// / A REPRENDRE
+// Message commencant par un B, APP Base -> APP CONTROL. Traite aussi bien requete que libération
 func traiterMessageDemandeSC(rcvmsg string) {
 	H++
-	demande := utils.StringToMessageElementExclusionMutuelle(rcvmsg)
+	demande := utils.StringToMessageTypeSC(rcvmsg)
 	tabSC[Site] = utils.MessageExclusionMutuelle{
 		Type:       demande,
 		Estampille: utils.Estampille{Site: Site, Horloge: H},
 	}
-	/*
-		if utils.QuestionEntreeSC(Site, tabSC) {
-			envoyerMessageSCBase(tabSC[Site].Type)
-		}
-	*/
+	MessageSC := utils.MessageExclusionMutuelle{Type: demande, Estampille: {Site: Site, Horloge: H}}
+	envoyerMessageSCControle(MessageSC)
 }
 
-// Message commencant par un D
+// Message commencant par un C, APP CONTROLE -> APP CONTROLE
 func traiterMessageFinSC(rcvmsg string) {
 	fin := utils.StringToMessageExclusionMutuelle(rcvmsg)
 	H++
@@ -139,7 +134,9 @@ func traiterMessageRequete(rcvmsg string) {
 		Type:       utils.Requete,
 		Estampille: demande.Estampille,
 	}
-	envoyerMessageSCControle(demande)
+
+	Accuse := utils.MessageExclusionMutuelle{Type: utils.Liberation, Estampille: {Site: Site, Horloge: H}}
+	envoyerMessageSCControle(Accuse)
 
 	if utils.QuestionEntreeSC(Site, tabSC) {
 		envoyerMessageSCBase(tabSC[Site].Type)
