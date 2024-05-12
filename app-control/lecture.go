@@ -13,7 +13,7 @@ func lecture() {
 		fmt.Scanln(&rcvmsg)
 		mutex.Lock()
 		// On traite uniquement les messages qui ne commencent pas par un 'A'
-		if rcvmsg[0] != uint8('A') {
+		if rcvmsg[0] != uint8('A') && rcvmsg[0] != uint8('B') && rcvmsg[0] != uint8('C') {
 			//TRAITEMENT DES MESSAGES DE CONTRÔLE
 			if utils.TrouverValeur(rcvmsg, "horloge") != "" {
 				if utils.TrouverValeur(rcvmsg, "prepost") == "true" {
@@ -30,8 +30,23 @@ func lecture() {
 			}
 			// TO DO implémenter le traitement B et C
 		}
-		mutex.Unlock()
+		if rcvmsg[0] == 'B' {
+			traiterMessageDemandeSC(rcvmsg)
+		}
 	}
+	if rcvmsg[0] == 'C' {
+		demande := utils.StringToMessageTypeSC(rcvmsg)
+		switch demande {
+		case utils.Requete:
+			traiterMessageRequete(rcvmsg)
+		case utils.Accuse:
+			traiterMessageAccuse(rcvmsg)
+		case utils.Liberation:
+			traiterMessageLiberation(rcvmsg)
+		default:
+		}
+	}
+	mutex.Unlock()
 }
 
 // TRAITEMENT DES CONTRÔLES NORMAUX : on extrait le pixel que l'on exploite dans l'app-base et on fait suivre l'information
@@ -100,16 +115,18 @@ func traiterMessagePixel(rcvmsg string) {
 
 // Message commencant par un B, APP Base -> APP CONTROL. Traite aussi bien requete que libération
 func traiterMessageDemandeSC(rcvmsg string) {
-	H++
 	demande := utils.StringToMessageTypeSC(rcvmsg)
+	H++
 	tabSC[Site] = utils.MessageExclusionMutuelle{
 		Type:       demande,
 		Estampille: utils.Estampille{Site: Site, Horloge: H},
 	}
-	MessageSC := utils.MessageExclusionMutuelle{Type: demande, Estampille: {Site: Site, Horloge: H}}
+	MessageSC := utils.MessageExclusionMutuelle{Type: demande, Estampille: utils.Estampille{Site: Site, Horloge: H}}
 	envoyerMessageSCControle(MessageSC)
 }
 
+// PROBABLEMENT A SUPPRIMER
+/*
 // Message commencant par un C, APP CONTROLE -> APP CONTROLE
 func traiterMessageFinSC(rcvmsg string) {
 	fin := utils.StringToMessageExclusionMutuelle(rcvmsg)
@@ -126,6 +143,8 @@ func traiterMessageFinSC(rcvmsg string) {
 	}
 }
 
+*/
+
 // Message commencant par un C
 func traiterMessageRequete(rcvmsg string) {
 	demande := utils.StringToMessageExclusionMutuelle(rcvmsg)
@@ -135,7 +154,7 @@ func traiterMessageRequete(rcvmsg string) {
 		Estampille: demande.Estampille,
 	}
 
-	Accuse := utils.MessageExclusionMutuelle{Type: utils.Liberation, Estampille: {Site: Site, Horloge: H}}
+	Accuse := utils.MessageExclusionMutuelle{Type: utils.Liberation, Estampille: utils.Estampille{Site: Site, Horloge: H}}
 	envoyerMessageSCControle(Accuse)
 
 	if utils.QuestionEntreeSC(Site, tabSC) {
