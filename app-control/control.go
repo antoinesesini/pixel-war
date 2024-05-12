@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"sync"
+	"time"
 	"utils"
 )
 
@@ -52,6 +53,15 @@ func main() {
 	} else {
 		fmt.Println("Je suis pas en section critique, la fonction ne marche pas")
 	}
+
+	// Récupérer l'heure actuelle
+	now := time.Now()
+
+	// Convertir l'heure actuelle en chaîne de caractères
+	timeString := now.Format("2006-01-02/15:04:05")
+
+	// Afficher la chaîne de caractères
+	fmt.Println(timeString)
 	// FIN DEBUG
 
 	/*

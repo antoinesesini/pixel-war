@@ -30,6 +30,7 @@ func envoyerMessageSCControle(msgSC utils.MessageExclusionMutuelle) {
 	envoyerMessage(msg)
 }
 
+// Communication APP BASE <-> APP CONTROLE
 func envoyerMessageSCBase(msgSC utils.TypeSC) {
 	msg := ("B" + utils.MessageTypeSC(msgSC))
 	fmt.Println(msg)

@@ -163,6 +163,7 @@ func traiterMessageRequete(rcvmsg string) {
 }
 
 // Message commencant par un C
+
 func traiterMessageLiberation(rcvmsg string) {
 	liberation := utils.StringToMessageExclusionMutuelle(rcvmsg)
 	H = max(liberation.Estampille.Horloge, H) + 1
