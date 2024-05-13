@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c23d9-3109-42b5-bb24-a49bd0904157" name="Changes" comment="Implémenté non testéccezaec">
-      <change afterPath="$PROJECT_DIR$/app-base/frontend.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-base/Game.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-base/base.go" beforeDir="false" afterPath="$PROJECT_DIR$/app-base/base.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.work.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.work.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/utils/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <list id="da62b2b3-515b-4ff1-b90f-9cae1cc66d46" name="Changes by voire" comment="">
-      <change beforePath="$PROJECT_DIR$/app-base/base.go" beforeDir="false" afterPath="$PROJECT_DIR$/app-base/base.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-base/ecriture.go" beforeDir="false" afterPath="$PROJECT_DIR$/app-base/ecriture.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app-base/lecture.go" beforeDir="false" afterPath="$PROJECT_DIR$/app-base/lecture.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app-base/frontend.go" beforeDir="false" afterPath="$PROJECT_DIR$/app-base/frontend.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,16 +47,6 @@
     &quot;second&quot;: &quot;2a7bea8b-78d9-4f46-8b2e-f45d526fab46&quot;
   }
 }</component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/app-base/base.go">
-      <ranges>
-        <range start1="4" end1="4" start2="4" end2="6" changelist="fc8c23d9-3109-42b5-bb24-a49bd0904157" />
-        <range start1="33" end1="33" start2="35" end2="36" changelist="fc8c23d9-3109-42b5-bb24-a49bd0904157" />
-        <range start1="39" end1="39" start2="42" end2="60" changelist="da62b2b3-515b-4ff1-b90f-9cae1cc66d46" />
-        <range start1="84" end1="85" start2="105" end2="130" changelist="da62b2b3-515b-4ff1-b90f-9cae1cc66d46" />
-      </ranges>
-    </file>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -76,13 +60,14 @@
     "DefaultGoTemplateProperty": "Go File",
     "Go Build.go build app-base.executor": "Run",
     "Go Build.go build base.go.executor": "Run",
+    "Go Build.go build pixel-war/.executor": "Run",
     "Go Build.go build services.go.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "dev3",
+    "git-widget-placeholder": "implementUI",
     "go.import.settings.migrated": "true",
     "last_opened_file_path": "C:/Users/Dev/Desktop/Projet SR05/pixel-war/app-base",
     "node.js.detected.package.eslint": "true",
@@ -96,7 +81,7 @@
       <recent name="C:\Users\Dev\Desktop\Projet SR05\pixel-war\utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build Game.go">
+  <component name="RunManager" selected="Go Build.go build app-base">
     <configuration name="go build Game.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="pixel-war" />
       <working_directory value="$PROJECT_DIR$/app-base" />
@@ -129,6 +114,13 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
+    <configuration name="go build pixel-war/" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="pixel-war" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build services.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="pixel-war" />
       <working_directory value="$PROJECT_DIR$/utils" />
@@ -139,6 +131,7 @@
     </configuration>
     <list>
       <item itemvalue="Go Build.go build pixel-war" />
+      <item itemvalue="Go Build.go build pixel-war/" />
       <item itemvalue="Go Build.go build Game.go" />
       <item itemvalue="Go Build.go build app-base" />
       <item itemvalue="Go Build.go build base.go" />
@@ -146,8 +139,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build Game.go" />
         <item itemvalue="Go Build.go build app-base" />
+        <item itemvalue="Go Build.go build pixel-war/" />
+        <item itemvalue="Go Build.go build Game.go" />
         <item itemvalue="Go Build.go build base.go" />
         <item itemvalue="Go Build.go build services.go" />
       </list>

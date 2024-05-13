@@ -21,7 +21,6 @@ func createImageFromMatrix(matrix [][]Pixel) *ebiten.Image {
 			img.Set(x, y, color.RGBA{R: pixel.R, G: pixel.G, B: pixel.B, A: 0xFF})
 		}
 	}
-
 	return img
 }
 
@@ -45,18 +44,22 @@ func envoyerPixel(positionX int, positionY int, rouge int, vert int, bleu int) {
 }
 
 func (g *Game) Update() error {
+	screenWidth, screenHeight := ebiten.WindowSize()
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
-		clicGaucheMatrice(false, g, y, x, int(g.SelectedColor.R), int(g.SelectedColor.G), int(g.SelectedColor.B))
-		// Oui je sais c'est bizarre mais les coordonnées de la souris ne sont pas comme est ordonnée la matrice
+		if x >= 0 && x < screenWidth && y >= 0 && y < screenHeight {
+			clicGaucheMatrice(false, g, y, x, int(g.SelectedColor.R), int(g.SelectedColor.G), int(g.SelectedColor.B))
+			// Les coordonnées de la souris ne sont pas comme est ordonnée la matrice
+		}
 	}
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 		x, y := ebiten.CursorPosition()
-		x_pourc := x * 100 / 50
-		y_pourc := y * 100 / 50
-
-		R, G, B, _ := g.ColorWheel.At(x_pourc-100, y_pourc).RGBA()
-		g.SelectedColor = color.RGBA{uint8(R), uint8(G), uint8(B), 0xFF}
+		if x >= 0 && x < screenWidth && y >= 0 && y < screenHeight {
+			x_pourc := x * 100 / 50
+			y_pourc := y * 100 / 50
+			R, G, B, _ := g.ColorWheel.At(x_pourc-100, y_pourc).RGBA()
+			g.SelectedColor = color.RGBA{uint8(R), uint8(G), uint8(B), 0xFF}
+		}
 
 	}
 	return nil
