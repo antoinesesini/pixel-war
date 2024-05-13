@@ -49,7 +49,7 @@ func (g *Game) Update() error {
 		x, y := ebiten.CursorPosition()
 		if x >= 0 && x < screenWidth && y >= 0 && y < screenHeight {
 			clicGaucheMatrice(false, g, y, x, int(g.SelectedColor.R), int(g.SelectedColor.G), int(g.SelectedColor.B))
-			// Les coordonnées de la souris ne sont pas comme est ordonnée la matrice
+			// Les coordonnées de la souris ne sont pas comme est ordonnée la matrice, donc inversion de x et de y
 		}
 	}
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
