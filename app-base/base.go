@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"image/color"
 	"os"
 	"strconv"
 	"sync"
@@ -31,11 +33,30 @@ func sendPeriodic(nbMessages int, slower bool) {
 				time.Sleep(time.Duration(1) * time.Second)
 			}
 		}
+		// UPDATE MATRIX
 		envoyerPixel(i, i, 255, val, 0)
 		relacherSC()
 		time.Sleep(time.Duration(500) * time.Millisecond)
 	}
 	utils.DisplayWarning(monNom, "sendPeriodic", "SEND PERIODIC FINIT")
+}
+
+func clicGaucheMatrice(slower bool, game *Game, positionX int, positionY int, rouge int, vert int, bleu int) {
+	demandeSC()
+	//Le slower permet créer une différence de vitesse entre les sites et accentue la dispute pour la section critique
+	//Ici que pour les 2 premiers sites
+	if slower {
+		if monNom[0:2] == "A1" {
+			time.Sleep(time.Duration(3) * time.Second)
+		}
+		if monNom[0:2] == "A2" {
+			time.Sleep(time.Duration(1) * time.Second)
+		}
+	}
+	game.UpdateMatrix(positionX, positionY, uint8(rouge), uint8(vert), uint8(bleu))
+	envoyerPixel(positionX, positionY, rouge, vert, bleu)
+	relacherSC()
+	time.Sleep(time.Duration(500) * time.Millisecond)
 }
 
 var mutex = &sync.Mutex{}
@@ -82,7 +103,31 @@ func main() {
 			go sendPeriodic(20, true)
 		}
 	}
-	go lecture()
+	matrix := make([][]Pixel, 100)
+	for y := 0; y < 100; y++ {
+		matrix[y] = make([]Pixel, 100)
+		for x := 0; x < 100; x++ {
+			matrix[y][x] = Pixel{
+				R: 255,
+				G: 255,
+				B: 255,
+			}
+		}
+	}
+
+	colorWheel, _, err := ebitenutil.NewImageFromFile("app-base/color_wheel.png")
+	if err != nil {
+		panic(err)
+	}
+
+	game := &Game{
+		Matrix:        matrix,
+		ColorWheel:    colorWheel,
+		SelectedColor: color.RGBA{R: 0, G: 0, B: 0, A: 0xFF},
+	}
+
+	go lecture(game)
+
 	//On décide de bloquer le programme principal
 	for {
 		time.Sleep(time.Duration(60) * time.Second)
