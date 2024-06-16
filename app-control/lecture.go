@@ -226,7 +226,7 @@ func finSauvegarde() {
 		utils.DisplayInfoSauvegarde(monNom, "Fin", utils.EtatLocalToString(etatLocal))
 	}
 
-	for _, mp := range etatGlobal.ListEtatLocal[1].ListMessagePixel {
+	for _, mp := range etatGlobal.ListEtatLocal[2].ListMessagePixel {
 		utils.DisplayInfoSauvegarde(monNom, "MAJ ETAT LOCAL", "Je prends dans l'état de "+etatGlobal.ListEtatLocal[1].NomSite)
 		monEtatLocal.ListMessagePixel = append(monEtatLocal.ListMessagePixel, mp)
 	}
